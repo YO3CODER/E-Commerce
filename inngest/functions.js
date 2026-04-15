@@ -4,9 +4,11 @@ import prisma from "@/lib/prisma";
 
 // Function to create user in database when created in Clerk
 export const syncUserCreation = inngest.createFunction(
-  { id: "sync-user-create" },
-  { event: "clerk/user.created" },
-  async (event) => {
+  { 
+    id: "sync-user-create",
+    event: "clerk/user.created"
+  },
+  async ({ event }) => {
     const { data } = event;
     await prisma.user.create({
       data: {
@@ -16,13 +18,16 @@ export const syncUserCreation = inngest.createFunction(
         image: data.image_url,
       },
     });
+    return { success: true, message: "User created successfully" };
   },
 );
 
 // Function to update user data in database when updated in Clerk
 export const syncUserUpdation = inngest.createFunction(
-  { id: "sync-user-update" },
-  { event: "clerk/user.updated" },
+  { 
+    id: "sync-user-update",
+    event: "clerk/user.updated"
+  },
   async ({ event }) => {
     const { data } = event;
     await prisma.user.update({
@@ -33,17 +38,21 @@ export const syncUserUpdation = inngest.createFunction(
         image: data.image_url,
       },
     });
+    return { success: true, message: "User updated successfully" };
   },
 );
 
 // Function to delete user from database when deleted in Clerk
 export const syncUserDeletion = inngest.createFunction(
-  { id: "sync-user-delete" },
-  { event: "clerk/user.deleted" },
+  { 
+    id: "sync-user-delete",
+    event: "clerk/user.deleted"
+  },
   async ({ event }) => {
     const { data } = event;
     await prisma.user.delete({
       where: { id: data.id },
     });
+    return { success: true, message: "User deleted successfully" };
   },
 );
